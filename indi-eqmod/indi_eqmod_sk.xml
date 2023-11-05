@@ -56,6 +56,22 @@
 1.0
 </defNumber>
 </defNumberVector>
+<defNumberVector device="EQMod Mount" name="WORMPERIODSTEPS" label="Worm Steps/Period" group="Motor Status" state="Idle" perm="ro">
+<defNumber name="RAWormPeriodSteps" label="RA Worm Steps/Period" format="%.0f" min="0.0" max="16777215.0" step="1.0">
+1.0
+</defNumber>
+<defNumber name="DEWormPeriodSteps" label="DE Worm Steps/Period" format="%.0f" min="0.0" max="16777215.0" step="1.0">
+1.0
+</defNumber>
+</defNumberVector>
+<defNumberVector device="EQMod Mount" name="WORMPOSITIONS" label="Worm Positions" group="Motor Status" state="Idle" perm="ro">
+<defNumber name="RAWormPosition" label="RA Worm Position" format="%.0f" min="0.0" max="16777215.0" step="1.0">
+1.0
+</defNumber>
+<defNumber name="DEWormPosition" label="DE Worm Position" format="%.0f" min="0.0" max="16777215.0" step="1.0">
+1.0
+</defNumber>
+</defNumberVector>
 <defLightVector device="EQMod Mount" name="RASTATUS" label="RA Motor Status" group="Motor Status" state="Idle" perm="ro">
     <defLight name="RAInitialized" label="Initialized">
 Alert

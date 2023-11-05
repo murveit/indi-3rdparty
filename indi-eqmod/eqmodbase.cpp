@@ -314,6 +314,8 @@ void EQMod::ISGetProperties(const char *dev)
         defineProperty(MountInformationTP);
         defineProperty(SteppersNP);
         defineProperty(CurrentSteppersNP);
+        defineProperty(WormPeriodStepsNP);
+        defineProperty(WormPositionsNP);
         defineProperty(PeriodsNP);
         defineProperty(JulianNP);
         defineProperty(TimeLSTNP);
@@ -398,6 +400,8 @@ bool EQMod::loadProperties()
     MountInformationTP = getText("MOUNTINFORMATION");
     SteppersNP         = getNumber("STEPPERS");
     CurrentSteppersNP  = getNumber("CURRENTSTEPPERS");
+    WormPeriodStepsNP  = getNumber("WORMPERIODSTEPS");
+    WormPositionsNP    = getNumber("WORMPOSITIONS");
     PeriodsNP          = getNumber("PERIODS");
     JulianNP           = getNumber("JULIAN");
     TimeLSTNP          = getNumber("TIME_LST");
@@ -468,6 +472,8 @@ bool EQMod::updateProperties()
         defineProperty(MountInformationTP);
         defineProperty(SteppersNP);
         defineProperty(CurrentSteppersNP);
+        defineProperty(WormPeriodStepsNP);
+        defineProperty(WormPositionsNP);
         defineProperty(PeriodsNP);
         defineProperty(JulianNP);
         defineProperty(TimeLSTNP);
@@ -609,6 +615,8 @@ bool EQMod::updateProperties()
         deleteProperty(MountInformationTP);
         deleteProperty(SteppersNP);
         deleteProperty(CurrentSteppersNP);
+        deleteProperty(WormPeriodStepsNP);
+        deleteProperty(WormPositionsNP);
         deleteProperty(PeriodsNP);
         deleteProperty(JulianNP);
         deleteProperty(TimeLSTNP);
@@ -800,6 +808,11 @@ bool EQMod::ReadScopeStatus()
     double steppervalues[2];
     const char *steppernames[] = { "RAStepsCurrent", "DEStepsCurrent" };
 
+    double wormPositionValues[2];
+    const char *wormPositionNames[] = { "RAWormPosition", "DEWormPosition" };
+    double wormPeriodStepsValues[2];
+    const char *wormPeriodStepsNames[] = { "RAWormPeriodSteps", "DEWormPeriodSteps" };
+    
     juliandate = getJulianDate();
     lst        = getLst(juliandate, getLongitude());
 
@@ -820,6 +833,7 @@ bool EQMod::ReadScopeStatus()
         TelescopePierSide pierSide;
         currentRAEncoder = mount->GetRAEncoder();
         currentDEEncoder = mount->GetDEEncoder();
+        
         DEBUGF(DBG_SCOPE_STATUS, "Current encoders RA=%ld DE=%ld", static_cast<long>(currentRAEncoder),
                static_cast<long>(currentDEEncoder));
         EncodersToRADec(currentRAEncoder, currentDEEncoder, lst, &currentRA, &currentDEC, &currentHA, &pierSide);
@@ -919,6 +933,24 @@ bool EQMod::ReadScopeStatus()
         CurrentSteppersNP.update(steppervalues, (char **)steppernames, 2);
         CurrentSteppersNP.apply();
 
+        uint32_t raWormPeriod = mount->GetRAWormPeriodSteps();
+        uint32_t decWormPeriod = mount->GetDEWormPeriodSteps();
+        wormPeriodStepsValues[0] = raWormPeriod;
+        wormPeriodStepsValues[1] = decWormPeriod;
+        WormPeriodStepsNP.update(wormPeriodStepsValues, (char **)wormPeriodStepsNames, 2);
+        WormPeriodStepsNP.apply();
+
+        if (raWormPeriod > 0)
+          wormPositionValues[0] = currentRAEncoder % raWormPeriod;
+        else
+          wormPositionValues[0] = 0;
+        if (wormPeriodStepsValues[1] > 0)
+          wormPositionValues[1] = currentDEEncoder % decWormPeriod;
+        else
+          wormPositionValues[1] = 0;
+        WormPositionsNP.update(wormPositionValues, (char **)wormPositionNames, 2);
+        WormPositionsNP.apply();
+        
         mount->GetRAMotorStatus(RAStatusLP);
         mount->GetDEMotorStatus(DEStatusLP);
         RAStatusLP.apply();

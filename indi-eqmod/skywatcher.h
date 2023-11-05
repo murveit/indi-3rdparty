@@ -75,7 +75,9 @@ class Skywatcher
         uint32_t GetDEEncoderHome();
         uint32_t GetRAPeriod();
         uint32_t GetDEPeriod();
-
+        uint32_t GetRAWormPeriodSteps();
+        uint32_t GetDEWormPeriodSteps();
+  
         INDI_DEPRECATED("Use GetRAMotorStatus(INDI::PropertyLight).")
         void GetRAMotorStatus(ILightVectorProperty *motorLP);
         void GetRAMotorStatus(INDI::PropertyLight motorLP);
@@ -267,6 +269,8 @@ class Skywatcher
 
         // Functions
         void InquireEncoderInfo(SkywatcherAxis axis, double *steppersvalues);
+        void InquireWormPeriodSteps(SkywatcherAxis axis, uint32_t *period);
+  
         void CheckMotorStatus(SkywatcherAxis axis);
         void ReadMotorStatus(SkywatcherAxis axis);
         void SetMotion(SkywatcherAxis axis, SkywatcherAxisStatus newstatus);
@@ -305,6 +309,8 @@ class Skywatcher
         uint32_t MCVersion; // Motor Controller Version
         uint32_t MountCode; //
 
+        uint32_t WormPeriodSteps[NUMBER_OF_SKYWATCHERAXIS];
+  
         uint32_t RASteps360;
         uint32_t DESteps360;
         uint32_t RAStepsWorm;

@@ -112,6 +112,16 @@ bool Skywatcher::Disconnect()
     return true;
 }
 
+uint32_t Skywatcher::GetRAWormPeriodSteps()
+{
+    return WormPeriodSteps[Axis1];
+}
+
+uint32_t Skywatcher::GetDEWormPeriodSteps()
+{
+    return WormPeriodSteps[Axis2];
+}
+
 uint32_t Skywatcher::GetRAEncoder()
 {
     // Axis Position
@@ -779,8 +789,17 @@ void Skywatcher::InquireEncoderInfo(SkywatcherAxis axis, double *steppersvalues)
     else
       backlashperiod[Axis2] =
         (long)(((SKYWATCHER_STELLAR_DAY * (double)DEStepsWorm) / (double)DESteps360) / SKYWATCHER_BACKLASH_SPEED_DE);
+
+    InquireWormPeriodSteps(Axis1, &WormPeriodSteps[Axis1]);
+    InquireWormPeriodSteps(Axis2, &WormPeriodSteps[Axis2]);
 }
 
+void Skywatcher::InquireWormPeriodSteps(SkywatcherAxis axis, uint32_t *period)
+{
+    dispatch_command(InquirePECPeriod, axis, nullptr);
+    *period = Revu24str2long(response + 1);
+}
+    
 bool Skywatcher::IsRARunning()
 {
     CheckMotorStatus(Axis1);

@@ -93,6 +93,8 @@ class EQMod : public INDI::Telescope, public INDI::GuiderInterface
         INDI::PropertyText     MountInformationTP  {INDI::Property()};
         INDI::PropertyNumber   SteppersNP          {INDI::Property()};
         INDI::PropertyNumber   CurrentSteppersNP   {INDI::Property()};
+        INDI::PropertyNumber   WormPositionsNP     {INDI::Property()};
+        INDI::PropertyNumber   WormPeriodStepsNP   {INDI::Property()};
         INDI::PropertyNumber   PeriodsNP           {INDI::Property()};
         INDI::PropertyNumber   JulianNP            {INDI::Property()};
         INDI::PropertyNumber   TimeLSTNP           {INDI::Property()};
